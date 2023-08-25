@@ -44,7 +44,7 @@ import CategoryPage from './Category.js';
                         <li key={index}>
                             <Link
                                 to={`/category/${item.name}`}
-                                onClick={() => {
+                                onClick={() => { 
                                     setClickedItem(item);
                                     RoutesF(item);
                                 }}
