@@ -34,6 +34,28 @@ namespace my_new_app.Controllers
             return categories;
         }
 
+
+        [HttpGet("{id}")]   
+        public async Task<ActionResult<Category>> GetOneCategory(int id)
+        {
+            
+            
+                var oneItem = await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id); 
+
+                if (oneItem == null)
+                {
+                    return NotFound(); // Return a 404 Not Found response if the category doesn't exist
+                }
+
+                return oneItem;
+
+             
+            
+           
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> CreateCategory(string name, string description)
         {

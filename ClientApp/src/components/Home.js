@@ -1,73 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import axios from "axios"
-import { Link, Route, Routes, Router } from 'react-router-dom';
-import CategoryPage from './Category.js';
+import React  from 'react';
+import Nav from "./NavMenu"
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
- function Home() {
-     const [Category, setCategories] = useState([]);
-     const [showRoutes, setShowRoutes] = useState(false)
-     const [ClickedItem, setClickedItem] = useState({})
-
-    useEffect(function () {
-        var response = axios.get("https://localhost:7260/Categories")
-        response.then(res => {
-            setCategories(res.data)
-        })
-    }, [])
-            console.log(Category)
-
-     function RoutesF(item) {
-             console.log("Made it",item.id)
-         if (item.id === ClickedItem.id) {
-         setShowRoutes(true)
-         }
-     }
-
-    
-
-
+import SecondNavBar from "./SecondNavBar"
+function Home(props) {
+    console.log(props.Category.products )
     return (
-        <div>
-            <h1>Hello, class!</h1>
-            <div style={{ width: "100%", height: "fit-content", display: "flex", flexDirection: "row" }}>
-
-                <ul >
-    
-                   
-
-                       
-                               
-                    {Category.map((item, index) => {
-                        return (
-
-                        <li key={index}>
-                            <Link
-                                to={`/category/${item.name}`}
-                                onClick={() => { 
-                                    setClickedItem(item);
-                                    RoutesF(item);
-                                }}
-                            >
-                                {item.name}
-                            </Link>
-
-
-                        </li>
+        <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100vh"}} >
+            <Nav />
+            <div style={{ display: "flex",  width:"100%" }}>
+                <SecondNavBar
+                    setClickedItem={props.setClickedItem} Category={props.Category} setCategories={props.setCategories} ClickedItem={props.ClickedItem}/>
+           
+                <div id="NweDiv" style={{ display: "flex", border: "1px solid black" }}>
+               
+                    {props.Category.map(category => (
+                        category.products.length > 0 && (
+                            category.products.map(product => (
+                                <div key={product.id}>
+                                    <Card style={{ width: '14rem' }}>
+                                        <Card.Img src="https://www.bing.com/th?id=OP.jEg7o%2fYqJQnaQw474C474&o=5&pid=21.1&w=130&h=176&qlt=100&dpr=1.5&bw=6&bc=FFFFFF&c=17" style={{ height: "230px", objectFit: "contain" }} />
+                                        <Card.Body>
+                                            <Card.Title style={{ textAlign: "center" }}>{product.name}</Card.Title>
+                                            <Card.Text style={{ textAlign: "center" }}>
+                                                {product.description}
+                                            </Card.Text>
+                                            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+                                                <Button variant="primary">Delete</Button>
+                                                <Button variant="primary">Update</Button>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </div>
+                            ))
                         )
-                    })}
-                    {console.log(ClickedItem) }
-                    {showRoutes && <Routes>
-                        <Route path={"/category/" + ClickedItem.name} element={<CategoryPage ClickedItem={ClickedItem} />} />
-                    </Routes> }
-                               
-                           
-                        
-                </ul>
+                    ))}
             </div>
-            
-        </div>
-    );
-
+            </div>
+            </div>
+    )
 }
+
 export default Home;
