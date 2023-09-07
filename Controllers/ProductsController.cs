@@ -28,16 +28,35 @@ namespace my_new_app.Controllers
                 return products;
             }
 
-            [HttpPost]
-            public async Task<ActionResult> CreateProduct(string name, string description, double price, int categoryId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Category>> GetOneCategory(int id)
         {
-                Product product = new  Product( name, description, price, categoryId);
-                _context.Products.Add(product);
+
+
+            var oneItem = await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
+
+            if (oneItem == null)
+            {
+                return NotFound(); // Return a 404 Not Found response if the category doesn't exist
+            }
+
+            return oneItem;
+
+
+
+
+        }
+
+        [HttpPost]
+            public async Task<ActionResult> CreateProduct(Product product)
+        {
+                Product products = new Product( product.Name, product.Description, product.Price, product.CategoryId);
+                _context.Products.Add(products);
                 _context.SaveChanges();
                 return Ok();
             }
 
-            [HttpDelete]
+            [HttpDelete("{id}")]
             public async Task<ActionResult> DeleteProduct(int id)
             {
                 try
@@ -61,9 +80,9 @@ namespace my_new_app.Controllers
                 }
             }
 
-            [HttpPut]
-            public async Task<ActionResult> UpdateProduct(int id, string name, string description)
-            {
+            [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateProduct(int id,  Product model)
+        {
                 try
                 {
                     Product productToUpdate = await _context.Products.FindAsync(id);
@@ -73,8 +92,8 @@ namespace my_new_app.Controllers
                         return NotFound(); // Return a 404 Not Found response if the category doesn't exist
                     }
 
-                    productToUpdate.Name = name; // Update the name
-                    productToUpdate.Description = description; // Update the description
+                    productToUpdate.Name = model.Name; // Update the name
+                    productToUpdate.Description = model.Description; // Update the description
 
                     _context.Products.Update(productToUpdate);
                     await _context.SaveChangesAsync();

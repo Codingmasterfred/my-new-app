@@ -13,7 +13,7 @@ function Home(props) {
                 <SecondNavBar
                     setClickedItem={props.setClickedItem} Category={props.Category} setCategories={props.setCategories} ClickedItem={props.ClickedItem}/>
            
-                <div id="NweDiv" style={{ display: "flex", border: "1px solid black" }}>
+                <div id="NweDiv" style={{ display: "flex" }}>
                
                     {props.Category.map(category => (
                         category.products.length > 0 && (

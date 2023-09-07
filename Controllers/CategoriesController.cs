@@ -57,15 +57,20 @@ namespace my_new_app.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> CreateCategory(string name, string description)
+        public async Task<ActionResult> CreateCategory( Category model)
         {
-            Category category = new Category(name, description);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Category category = new Category(model.Name, model.Description);
             _context.Categories.Add(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCategory(int id)
         {
             try
@@ -89,8 +94,8 @@ namespace my_new_app.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult> UpdateCategory(int id, string name, string description)
+        [HttpPut("{id}")    ]
+        public async Task<ActionResult> UpdateCategory(int id,Category category)
         {
             try
             {
@@ -101,8 +106,8 @@ namespace my_new_app.Controllers
                     return NotFound(); // Return a 404 Not Found response if the category doesn't exist
                 }
 
-                categoryToUpdate.Name = name; // Update the name
-                categoryToUpdate.Description = description; // Update the description
+                categoryToUpdate.Name = category.Name; // Update the name
+                categoryToUpdate.Description = category.Description; // Update the description
 
                 _context.Categories.Update(categoryToUpdate);
                 await _context.SaveChangesAsync();

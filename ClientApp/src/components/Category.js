@@ -4,9 +4,24 @@ import Card from 'react-bootstrap/Card';
 import axios from 'axios';
 import Nav from "./NavMenu"
 import SecondNavBar from "./SecondNavBar"
+import Offcanvas from 'react-bootstrap/Offcanvas';
 
 function CategoryPage(props) {
-    // ...
+    useEffect(function () {
+        console.log("bfhkwbvwvh")
+        var response = axios.get(`https://localhost:7260/Categories/${props.clickedItem.id}`)
+        response.then(res => {
+            console.log("we have the item we want ")
+            props.setCategories(res.data)
+
+        })
+    }, []); 
+    console.log("clickedItem",props.clickedItem)
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     return (
         <>
@@ -16,7 +31,27 @@ function CategoryPage(props) {
                 <SecondNavBar
                     setClickedItem={props.setClickedItem} Category={props.Category} setCategories={props.setCategories} ClickedItem={props.ClickedItem} />
                 <div id="ContainProducts" style={{ display: "flex", flexDirection: "column" }}>
-                    <h1 style={{ textAlign: "center" }}>{props.clickedItem.name}</h1>
+                    <div style={{display:"flex",justifyContent:"space-evenly", } }>
+                        <h1 style={{}}>{props.clickedItem.name}</h1>
+                        {props.clickedItem.name &&
+                            <>
+                            <Button variant="primary" onClick={handleShow} className="me-2">
+                            Create A Product
+                        </Button>
+                        <Offcanvas show={show} onHide={handleClose} placement="end" {...props}>
+                            <Offcanvas.Header closeButton>
+                                <Offcanvas.Title>Create A Product</Offcanvas.Title>
+                            </Offcanvas.Header>
+                            <Offcanvas.Body>
+                                Some text as a placeholder. In real life, you can have the elements you
+                                have chosen. Like text, images, lists, etc.
+                            </Offcanvas.Body>
+                    </Offcanvas>
+                    
+                </>}
+                    
+                   
+                    </div>
                     <div style={{
                         display: "flex",
                         width: "800px"
