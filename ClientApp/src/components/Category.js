@@ -7,18 +7,31 @@ import SecondNavBar from "./SecondNavBar"
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
 function CategoryPage(props) {
-    useEffect(function () {
-        console.log("bfhkwbvwvh")
-        var response = axios.get(`https://localhost:7260/Categories/${props.clickedItem.id}`)
-        response.then(res => {
-            console.log("we have the item we want ")
-            props.setCategories(res.data)
-
-        })
-    }, []); 
-    console.log("clickedItem",props.clickedItem)
-
     const [show, setShow] = useState(false);
+    const [localClickedItem, setLocalClickedItem] = useState(null);
+
+    useEffect(function () {
+        // Check if a clicked item exists in local storage
+        const savedClickedObject = localStorage.getItem('clickedObject');
+        if (savedClickedObject) {
+            setLocalClickedItem(JSON.parse(savedClickedObject));
+        }
+
+        // Fetch the clicked item's data from the API if it's not in local storage
+        if (!props.clickedItem.id && !localClickedItem) {
+            return;
+        }
+
+        // Fetch data if props.clickedItem doesn't have data
+        if (!props.clickedItem.id && localClickedItem) {
+            props.setClickedItem(localClickedItem);
+        } else if (props.clickedItem.id) {
+            // Store the clicked item data in local storage
+            localStorage.setItem('clickedObject', JSON.stringify(props.clickedItem));
+        }
+    }, [props.clickedItem, localClickedItem]);
+    
+    console.log(localClickedItem)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
